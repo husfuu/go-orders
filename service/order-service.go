@@ -1,12 +1,15 @@
 package service
 
 import (
+	"github.com/husfuu/go-order/dao"
 	"github.com/husfuu/go-order/entity"
 	"github.com/husfuu/go-order/repository"
 )
 
 type OrderService interface {
 	GetOrders() ([]entity.Order, error)
+	GetOrderById(input dao.GetOrderDetailInput) (entity.Order, error)
+	CreateOrder(input dao.CreateOrderInput) (entity.Order, error)
 }
 
 type orderService struct {
@@ -25,4 +28,27 @@ func (s *orderService) GetOrders() ([]entity.Order, error) {
 	}
 
 	return orders, nil
+}
+
+func (s *orderService) GetOrderById(input dao.GetOrderDetailInput) (entity.Order, error) {
+	order, err := s.repository.FindById(input.ID)
+
+	if err != nil {
+		return order, nil
+	}
+
+	return order, nil
+}
+
+func (s *orderService) CreateOrder(input dao.CreateOrderInput) (entity.Order, error) {
+	order := entity.Order{}
+	order.CustomerName = input.CustomerName
+
+	newOrder, err := s.repository.Save(order)
+
+	if err != nil {
+		return newOrder, nil
+	}
+
+	return newOrder, nil
 }

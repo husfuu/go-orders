@@ -28,8 +28,6 @@ func main() {
 
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", dbHost, dbUser, dbPassword, dbName, dbPort)
 
-	// config := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", host, user, password, dbname, dbPort)
-
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -46,6 +44,8 @@ func main() {
 	api := router.Group("/api/v1")
 
 	api.GET("/orders", userHandler.GetOrders)
+	api.GET("/orders/:id", userHandler.GetOrder)
+	api.POST("/orders", userHandler.CreateOrder)
 
 	router.Run()
 }
