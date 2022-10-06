@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -58,6 +59,7 @@ func (h *orderHandler) CreateOrder(c *gin.Context) {
 	var input dao.CreateOrderInput
 
 	err := c.ShouldBindJSON(&input)
+
 	if err != nil {
 		errors := helper.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
@@ -66,7 +68,7 @@ func (h *orderHandler) CreateOrder(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
-
+	fmt.Print(input)
 	newOrder, err := h.service.CreateOrder(input)
 	if err != nil {
 		response := helper.APIResponse("Failed to create order", http.StatusBadRequest, "error", nil)

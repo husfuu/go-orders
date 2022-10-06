@@ -9,7 +9,7 @@ type OrderRepository interface {
 	FindAll() ([]entity.Order, error)
 	FindById(ID int) (entity.Order, error)
 	Save(order entity.Order) (entity.Order, error)
-	// Update(order entity.Order) (entity.Order, error)
+	Update(order entity.Order) (entity.Order, error)
 	// Delete(order entity.Order) (entity.Order, error)
 }
 
@@ -49,6 +49,16 @@ func (r *orderRepository) Save(order entity.Order) (entity.Order, error) {
 
 	if err != nil {
 		return order, err
+	}
+
+	return order, nil
+}
+
+func (r *orderRepository) Update(order entity.Order) (entity.Order, error) {
+	err := r.db.Save(&order)
+
+	if err != nil {
+		return order, nil
 	}
 
 	return order, nil

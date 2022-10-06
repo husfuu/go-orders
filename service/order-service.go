@@ -10,6 +10,7 @@ type OrderService interface {
 	GetOrders() ([]entity.Order, error)
 	GetOrderById(input dao.GetOrderDetailInput) (entity.Order, error)
 	CreateOrder(input dao.CreateOrderInput) (entity.Order, error)
+	// UpdateOrder(inputId dao.GetOrderDetailInput, inputData dao.CreateOrderInput) (entity.Order, error)
 }
 
 type orderService struct {
@@ -43,6 +44,10 @@ func (s *orderService) GetOrderById(input dao.GetOrderDetailInput) (entity.Order
 func (s *orderService) CreateOrder(input dao.CreateOrderInput) (entity.Order, error) {
 	order := entity.Order{}
 	order.CustomerName = input.CustomerName
+
+	var items = make([]entity.Item, 0)
+	items = append(items, input.OrderItems...)
+	order.OrderItems = items
 
 	newOrder, err := s.repository.Save(order)
 
