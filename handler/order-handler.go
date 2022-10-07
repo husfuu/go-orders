@@ -51,7 +51,7 @@ func (h *orderHandler) GetOrder(c *gin.Context) {
 		return
 	}
 
-	response := helper.APIResponse("Campaign detail", http.StatusOK, "success", orderDetail)
+	response := helper.APIResponse("Order detail", http.StatusOK, "success", orderDetail)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -77,5 +77,57 @@ func (h *orderHandler) CreateOrder(c *gin.Context) {
 	}
 
 	response := helper.APIResponse("Success to create order", http.StatusOK, "success", newOrder)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *orderHandler) UpdateOrder(c *gin.Context) {
+	var inputID dao.GetOrderDetailInput
+
+	err := c.ShouldBindUri(&inputID)
+
+	if err != nil {
+		response := helper.APIResponse("Failed to update order", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	var inputData dao.CreateOrderInput
+
+	err = c.ShouldBindJSON(&inputData)
+
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		errorMessage := gin.H{"errors": errors}
+
+		response := helper.APIResponse("Failed to update order", http.StatusUnprocessableEntity, "error", errorMessage)
+		c.JSON(http.StatusUnprocessableEntity, response)
+		return
+	}
+
+	updatedOrder, err := h.service.UpdateOrder(inputID, inputData)
+	if err != nil {
+		response := helper.APIResponse("Failed to update order", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	response := helper.APIResponse("Success to update order", http.StatusOK, "success", updatedOrder)
+	c.JSON(http.StatusOK, response)
+}
+
+func (h *orderHandler) DeleteOrder(c *gin.Context) {
+	var inputID dao.GetOrderDetailInput
+
+	err := c.ShouldBindUri(&inputID)
+
+	if err != nil {
+		response := helper.APIResponse("Failed to delete order", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	h.service.DeleteOrder(inputID)
+
+	response := helper.APIResponse("Success to delete order", http.StatusOK, "success", nil)
 	c.JSON(http.StatusOK, response)
 }

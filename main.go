@@ -46,6 +46,7 @@ func main() {
 	api.GET("/orders", userHandler.GetOrders)
 	api.GET("/orders/:id", userHandler.GetOrder)
 	api.POST("/orders", userHandler.CreateOrder)
-
+	api.PUT("/orders/:id", userHandler.UpdateOrder)
+	api.DELETE("/orders/:id", userHandler.DeleteOrder)
 	router.Run()
 }

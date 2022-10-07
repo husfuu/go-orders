@@ -10,7 +10,8 @@ type OrderService interface {
 	GetOrders() ([]entity.Order, error)
 	GetOrderById(input dao.GetOrderDetailInput) (entity.Order, error)
 	CreateOrder(input dao.CreateOrderInput) (entity.Order, error)
-	// UpdateOrder(inputId dao.GetOrderDetailInput, inputData dao.CreateOrderInput) (entity.Order, error)
+	UpdateOrder(inputId dao.GetOrderDetailInput, inputData dao.CreateOrderInput) (entity.Order, error)
+	DeleteOrder(inputId dao.GetOrderDetailInput) (entity.Order, error)
 }
 
 type orderService struct {
@@ -56,4 +57,38 @@ func (s *orderService) CreateOrder(input dao.CreateOrderInput) (entity.Order, er
 	}
 
 	return newOrder, nil
+}
+
+func (s *orderService) UpdateOrder(inputID dao.GetOrderDetailInput, inputData dao.CreateOrderInput) (entity.Order, error) {
+	order, err := s.repository.FindById(inputID.ID)
+
+	if err != nil {
+		return order, err
+	}
+	order.CustomerName = inputData.CustomerName
+
+	order.OrderItems = []entity.Item{}
+
+	var items = make([]entity.Item, 0)
+	items = append(items, inputData.OrderItems...)
+	order.OrderItems = items
+	updatedOrder, err := s.repository.Update(order)
+
+	if err != nil {
+		return updatedOrder, nil
+	}
+
+	return updatedOrder, nil
+}
+
+func (s *orderService) DeleteOrder(inputID dao.GetOrderDetailInput) (entity.Order, error) {
+	order, err := s.repository.FindById(inputID.ID)
+
+	if err != nil {
+		return order, err
+	}
+
+	s.repository.Delete(inputID.ID)
+
+	return order, nil
 }
