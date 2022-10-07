@@ -35,12 +35,12 @@ func (r *orderRepository) FindAll() ([]entity.Order, error) {
 
 func (r *orderRepository) FindById(ID int) (entity.Order, error) {
 	var order entity.Order
+
 	err := r.db.Preload("OrderItems").Where("id = ?", ID).Find(&order).Error
 
 	if err != nil {
 		return order, err
 	}
-
 	return order, nil
 }
 
@@ -73,6 +73,9 @@ func (r *orderRepository) DeleteItems(ID int) {
 
 func (r *orderRepository) Delete(ID int) (entity.Order, error) {
 	var order entity.Order
+
+	r.DeleteItems(ID)
+
 	err := r.db.Where("id = ?", ID).Delete(&order).Error
 
 	if err != nil {

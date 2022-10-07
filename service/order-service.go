@@ -34,9 +34,9 @@ func (s *orderService) GetOrders() ([]entity.Order, error) {
 
 func (s *orderService) GetOrderById(input dao.GetOrderDetailInput) (entity.Order, error) {
 	order, err := s.repository.FindById(input.ID)
-
+	// fmt.Println(order)
 	if err != nil {
-		return order, nil
+		return order, err
 	}
 
 	return order, nil

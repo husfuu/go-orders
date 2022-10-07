@@ -13,6 +13,8 @@ type Meta struct {
 	Status  string `json:"status"`
 }
 
+type EmptyObj struct{}
+
 func APIResponse(message string, code int, status string, data interface{}) Response {
 	meta := Meta{
 		Message: message,

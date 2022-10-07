@@ -44,6 +44,12 @@ func (h *orderHandler) GetOrder(c *gin.Context) {
 	}
 
 	orderDetail, err := h.service.GetOrderById(input)
+	// fmt.Println(orderDetail)
+	// if orderDetail.ID == 0 {
+	// 	response := helper.APIResponse("Failed to get detail of order, the id is not found!", http.StatusBadRequest, "error", helper.EmptyObj{})
+	// 	c.JSON(http.StatusBadRequest, response)
+	// 	return
+	// }
 
 	if err != nil {
 		response := helper.APIResponse("Failed to get detail of order", http.StatusBadRequest, "error", nil)
@@ -126,7 +132,19 @@ func (h *orderHandler) DeleteOrder(c *gin.Context) {
 		return
 	}
 
-	h.service.DeleteOrder(inputID)
+	order, err := h.service.DeleteOrder(inputID)
+
+	if order.ID == 0 {
+		response := helper.APIResponse("Failed to get detail of order, the id is not found!", http.StatusBadRequest, "error", helper.EmptyObj{})
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	if err != nil {
+		response := helper.APIResponse("Failed to get detail of order", http.StatusBadRequest, "error", nil)
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	response := helper.APIResponse("Success to delete order", http.StatusOK, "success", nil)
 	c.JSON(http.StatusOK, response)
