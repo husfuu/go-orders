@@ -62,9 +62,14 @@ func (s *orderService) CreateOrder(input dao.CreateOrderInput) (entity.Order, er
 func (s *orderService) UpdateOrder(inputID dao.GetOrderDetailInput, inputData dao.CreateOrderInput) (entity.Order, error) {
 	order, err := s.repository.FindById(inputID.ID)
 
+	if order.ID == 0 {
+		return order, err
+	}
+
 	if err != nil {
 		return order, err
 	}
+
 	order.CustomerName = inputData.CustomerName
 
 	order.OrderItems = []entity.Item{}

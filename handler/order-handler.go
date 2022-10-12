@@ -44,12 +44,12 @@ func (h *orderHandler) GetOrder(c *gin.Context) {
 	}
 
 	orderDetail, err := h.service.GetOrderById(input)
-	// fmt.Println(orderDetail)
-	// if orderDetail.ID == 0 {
-	// 	response := helper.APIResponse("Failed to get detail of order, the id is not found!", http.StatusBadRequest, "error", helper.EmptyObj{})
-	// 	c.JSON(http.StatusBadRequest, response)
-	// 	return
-	// }
+
+	if orderDetail.ID == 0 {
+		response := helper.APIResponse("Failed to get detail of order, the id is not found!", http.StatusBadRequest, "error", helper.EmptyObj{})
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
 
 	if err != nil {
 		response := helper.APIResponse("Failed to get detail of order", http.StatusBadRequest, "error", nil)
@@ -111,6 +111,12 @@ func (h *orderHandler) UpdateOrder(c *gin.Context) {
 	}
 
 	updatedOrder, err := h.service.UpdateOrder(inputID, inputData)
+	if updatedOrder.ID == 0 {
+		response := helper.APIResponse("Failed to update order by id, the id is not found!", http.StatusBadRequest, "error", helper.EmptyObj{})
+		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
 	if err != nil {
 		response := helper.APIResponse("Failed to update order", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
